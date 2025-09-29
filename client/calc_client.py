@@ -7,9 +7,7 @@ import sys
 
 class MCPClient:
     def __init__(self):
-        # Create server parameters for stdio connection
-        # Ensure we run the server with the same Python interpreter / venv
-        # Use the working example server from 01-first-server/solution/python/server.py
+        # Use the working example server from ../server/calc_server.py
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
         server_script = os.path.abspath(
             os.path.join(base_dir, "server", "calc_server.py")
@@ -26,8 +24,11 @@ class MCPClient:
         try:
             async with stdio_client(self.server_params) as (read, write):
                 async with ClientSession(read, write) as session:
-                    # Initialize the connection
+                    print("📡 Connecting to MCP server...")
+
                     await session.initialize()
+
+                    print("✅ Connected to MCP server successfully!")
 
                     # List available resources
                     resources = await session.list_resources()
@@ -56,6 +57,8 @@ class MCPClient:
                     print("CALL TOOL")
                     result = await session.call_tool("add", arguments={"a": 1, "b": 7})
                     print(result.content)
+
+                    print("\n✨ Client operations completed successfully!")
 
         except Exception as e:
             import traceback
